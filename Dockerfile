@@ -1,4 +1,4 @@
-From centos/systemd
+From centos
 RUN yum install -y httpd \
 zip \
 unzip
