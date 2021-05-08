@@ -8,5 +8,5 @@ RUN unzip nolo.zip
 RUN cp -rvf nolo/* .
 RUN rm -rf nolo nolo.zip
 CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
-EXPOSE 80.
+EXPOSE 80
 
