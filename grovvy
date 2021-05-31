@@ -1,0 +1,20 @@
+node {
+    stage ("pull sporce code from github"){
+        git branch: 'main', url: 'https://github.com/n3meshram/project1.git'
+    }
+    stage ("build docker file"){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:v1:$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:latest'
+        
+    }
+    stage ("Push code in dockerHub"){
+        withCredentials([string(credentialsId: 'dockerhubpassword', variable: 'dockerpassword')]) {
+    // some block
+    sh 'docker login -u nmeshram -p ${dockerpassword}'
+    sh 'docker image push nmeshram/$JOB_NAME:v1:$BUILD_ID'
+    sh 'docker image push nmeshram/$JOB_NAME:latest'
+    sh 'docker image rmi $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:v1:$BUILD_ID nmeshram/$JOB_NAME:latest'
+}
+    }
+}
