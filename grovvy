@@ -4,17 +4,17 @@ node {
     }
     stage ("build docker file"){
         sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
-        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:v1:$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:v1.$BUILD_ID'
         sh 'docker image tag $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:latest'
         
     }
     stage ("Push code in dockerHub"){
-        withCredentials([string(credentialsId: 'dockerhubpassword', variable: 'dockerpassword')]) {
+       withCredentials([string(credentialsId: 'newpassword', variable: 'my_password')]) {
     // some block
-    sh 'docker login -u nmeshram -p ${dockerpassword}'
-    sh 'docker image push nmeshram/$JOB_NAME:v1:$BUILD_ID'
+    sh 'echo "$my_password" | docker login --username nmeshram --password-stdin'
+    sh 'docker image push nmeshram/$JOB_NAME:v1.$BUILD_ID'
     sh 'docker image push nmeshram/$JOB_NAME:latest'
-    sh 'docker image rmi $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:v1:$BUILD_ID nmeshram/$JOB_NAME:latest'
+    sh 'docker image rmi $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:latest'
 }
     }
 }
