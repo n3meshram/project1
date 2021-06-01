@@ -17,4 +17,12 @@ node {
     sh 'docker image rmi $JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:v1.$BUILD_ID nmeshram/$JOB_NAME:latest'
 }
     }
+    stage ("depolyment of docker container"){
+        def dockerrun = 'docker container run -p 9000:80 -d --name myweb nmeshram/scripted-pipeline:latest'
+        sshagent(['dockerhostpassword']) {
+    // some block
+    sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.6.255 ${dockerrun}"
+}
+        
+    }
 }
